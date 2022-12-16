@@ -6,9 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deploy App</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.5.3/css/bootstrap.min.css"/>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"/>
 
     <style>
         /*custom font*/
@@ -139,6 +141,7 @@
         /*progressbar*/
         #progressbar {
             margin-bottom: 30px;
+            margin-left: 50px;
             overflow: hidden;
             /*CSS counters to number the steps*/
             counter-reset: step;
@@ -149,7 +152,7 @@
             color: #666;
             text-transform: uppercase;
             font-size: 9px;
-            width: 33.33%;
+            width: 23.33%;
             float: left;
             position: relative;
             letter-spacing: 1px;
@@ -212,13 +215,14 @@
 
     <!-- MultiStep Form -->
     <div id="app" class="row">
-        <div class="col-md-6 col-md-offset-3">
+        <div class="col-md-12 col-md-offset-3">
             <form id="msform">
                 <!-- progressbar -->
                 <ul id="progressbar">
-                    <li class="active">Sub Domain </li>
-                    <li>Github Repository</li>
-                    <li>Database Setup</li>
+                    <li  :class="{ active: panel1 || panel2 || panel3 || panel4 }">Sub Domain </li>
+                    <li  :class="{ active: panel2 || panel3 || panel4}">Github Repository</li>
+                    <li  :class="{ active: panel3 || panel4 }">Database Setup</li>
+                    <li  :class="{ active: panel4 }">Deployment Progress</li>
                 </ul>
                 <!-- fieldsets -->
 
@@ -229,9 +233,13 @@
                     <input type="text" v-model="subdomain" />.techcamp.app
                     <br>
 
-                    <div v-if="loader"><i class="fa fa-spinner" aria-hidden="true"></i></div>
+                    <div v-if="loader">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
 
-                    <div v-if="res">{{res}}</div>
+                    <div v-if="res" class="alert alert-success alert-dismissible" role="alert">{{res}}</div>
+
+                    <div v-if="err" class="alert alert-danger" role="alert">{{err}}</div>
 
                     <input type="button" name="next"  @click="next_panel_one" class="next action-button" value="Next" />
                 </fieldset>
@@ -240,9 +248,11 @@
                 <fieldset  v-if="panel2">
                     <h2 class="fs-title">App Github Repository</h2>
                     <h3 class="fs-subtitle">Ensure: main.py(that has your app.routes) and requirements.txt are in the root</h3>
-                    https.github.com/<input type="text" v-model="github_url" />
+                    <input type="text" v-model="github_url" placeholder="Enter Github Repo URL"/>
 
-                    <div v-if="res">{{res}}</div>
+                    <div v-if="res" class="alert alert-success" role="alert">{{res}}</div>
+                    
+                    <div v-if="err" class="alert alert-danger" role="alert">{{err}}</div>
 
                     <div class="">
                         <input type="button" name="previous" @click="next_panel_two_previous" class="previous action-button-previous" value="Previous">
@@ -257,15 +267,38 @@
                     <input type="text" v-model="db_user" placeholder="PostgreSQL User" /><br>
                     <input type="text" v-model="db_password" placeholder="PostgreSQL Password" />
 
-                    <div v-if="loader"><i class="fa fa-spinner" aria-hidden="true"></i></div>
-                    <div v-if="res">{{res}}</div>
+                    <div v-if="loader">
+                        <i class="fas fa-spinner fa-spin"></i> Deployment in Progress
+                    </div>
+                    
+                    <div v-if="res" class="alert alert-success" role="alert">{{res}}</div>
+                    
+                    <div v-if="err" class="alert alert-danger" role="alert">{{err}}</div>
 
                     <br>
                     <input type="button" name="previous"  @click="next_panel_three_previous" class="previous action-button-previous" value="Previous" />
                     <input type="button" name="submit"  @click="next_panel_three" class="submit action-button" value="Submit" />
+
                 </fieldset>
 
-            </form>
+                <fieldset  v-if="panel4">
+                    <h2 class="fs-title">Deployment Progress For {{this.subdomain}}</h2>
+                    
+                        <div v-if="deploy_res">
+                           <li v-for="r in deploy_res" class="fs-subtitle">
+                            <b>Step {{r.step}}:</b> {{r.message}}
+                           </li>
+                        </div>
+
+                    <div v-if="loader">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+
+                    <br>
+                    <input type="button" name="submit"  @click="next_panel_four" class="submit action-button" value="Refresh" />
+                </fieldset>
+
+        </form>
         </div>
     </div>
     <!-- /.MultiStep Form -->
@@ -274,7 +307,9 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
 
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.5.3/js/bootstrap.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.0/vue.js" integrity="sha512-jbjz/TwyUj0Jsr2KSxpenMkrGMt6pQEvh3PukVKdTVlkSsfxuJYVHouydXgiHbuB99HO3bcw3BfTWPk5awFMLQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
@@ -289,20 +324,23 @@
           panel1:true,
           panel2:false,
           panel3:false,
+          panel4:false,
           subdomain: "",
           github_url: "",
           res: "",
+          err: "",
+          deploy_res:"",
           loader: false,
           db_name : "",
           db_user : "",
           db_password : "",
+          api_url: "http://127.0.0.1:5000"
         },
 
         methods : {
            
             check_availability :  function(){
-                
-                    return axios.post('http://127.0.0.1:5000/sub-domain-availability', {
+                    return axios.post(this.api_url + '/sub-domain-availability', {
                         subdomain: this.subdomain
                     })
                     .then(function (response) {
@@ -314,8 +352,7 @@
             },
 
             deploy_application :  function(){
-                
-                return axios.post('http://127.0.0.1:5000/deploy-app', {
+                return axios.post(this.api_url +'/deploy-app', {
                     subdomain: this.subdomain,
                     github_url: this.github_url,
                     db_name : this.db_name,
@@ -323,15 +360,26 @@
                     db_password : this.db_password
                 })
                 .then(function (response) {
-                     return response.data.subdomain;
+                     return response.data;
                 })
                 .catch(function (error) {
                     return error
                 });                
             },
 
-            next_panel_one : function(){
+            deploy_progress :  function(){
+                    return axios.post(this.api_url + '/deploy-progress', {
+                        subdomain: this.subdomain
+                    })
+                    .then(function (response) {
+                         return response.data;
+                    })
+                    .catch(function (error) {
+                        return error
+                    });                
+            },
 
+            next_panel_one : function(){
                  //start loader 
                  this.loader = true
                  this.res = ""
@@ -339,12 +387,14 @@
                 if (this.subdomain.length == 0)
                 {
                     this.loader = false
-                    this.res = "*Enter Subdomain" 
+                    this.err = "Enter Subdomain" 
+                    this.res = ""
                 } 
                 else if(this.subdomain.length > 0  && this.subdomain.length < 4)  
                 {
                     this.loader = false
-                    this.res = "*Subdomain must be more than 3 Characters" 
+                    this.err = "Subdomain must be more than 3 Characters" 
+                    this.res = ""
                 }
                 else
                 {
@@ -355,6 +405,7 @@
                             //Stop loader
                             this.loader = false
                             this.res = ""
+                            this.err = ""
 
                             //Change panel
                             this.panel1 = false;
@@ -365,7 +416,8 @@
                         {
                             //Stop loader
                             this.loader = false
-                            this.res = "*Sub domain unavailable"
+                            this.res = ""
+                            this.err = "*Sub domain unavailable"
                         }
                     });
                 }
@@ -373,60 +425,91 @@
             },
 
             next_panel_two : function(){
-
-                if (this.github_url != "")    
+                if (this.github_url == "" || !this.github_url.includes('https://github.com/'))    
+                {
+                    this.res = ""
+                    this.err = "Enter Valid Github Repository"
+                }
+                else
                 {
                     this.panel2 = false;
                     this.panel3 = true;
                     this.panel1 = false;
-                }
-                else
-                {
-                    this.res = "*Enter Github Repository"
-                }
 
-                // Add the github URL to variable
-
+                    this.res = ""
+                    this.err = ""
+                }               
             },
 
             next_panel_three : function(){
-
                 if (this.db_name == "" || this.db_user == "" || this.db_password == "")    
                 {
-                    this.res = "*Fill in all fields" 
+                    this.err = "Fill in all fields" 
+                    this.res = ""
                 }
                 else
                 {
                     this.res = ""
+                    this.err = ""
+
+                    // this.res="Deployment in Progress";
+
                     this.loader = true
                     // Axios send the subdomain and github URL
                     this.deploy_application().then((res) => {
-                        console.log("here", res)
+                        console.log("Deployment in Progress", res)
+                        if (res.status == 1)
+                        {
+                            this,loader = false
+                            this.next_panel_four();
+                            //Change Panel
+                            this.panel2 = false;
+                            this.panel3 = false;
+                            this.panel1 = false
+                            this.panel4 = true;
+                        }
+                        else
+                        {
+                            this.res = ""
+                            this.err="Errror try deploying later.";
+                        }
                     });
 
                 }
-                
-
             },
 
+            next_panel_four : function(){
+
+                    this.deploy_res = "";
+                    this.loader = true;
+                    // Axios send the subdomain and github URL
+                    this.deploy_progress().then((res) => {
+                        if (res.length > 1)
+                        {
+                            this.loader = false
+                           this.deploy_res = res
+
+                           console.log("Progress is ", res)
+                        }
+                        else
+                        {
+                            this.deploy_res="";
+                        }
+                    });
+            },
+
+            //Previous buttons 
+
             next_panel_two_previous : function(){
-                // this.res = "";
                 this.panel2 = false;
                 this.panel3 = false;
                 this.panel1 = true;
-
-                // Add the github URL to variable
-
             },
 
             next_panel_three_previous : function(){
-                // this.res = "";
                 this.panel2 = true;
                 this.panel3 = false;
                 this.panel1 = false;
-
-                // Add the github URL to variable
-
             }
 
         }
