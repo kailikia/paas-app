@@ -2,7 +2,7 @@ version: '3'
 services:
     web:
         build: .
-        container_name: paas-app
+        container_name: paas_app
         restart: always
         ports:
             - 4000:80
