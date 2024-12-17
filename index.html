@@ -268,7 +268,7 @@
                     <h3 class="fs-subtitle">Change your Psycopg2/SQLALchemy database credentials as below.</h3>
                     <label>Host: </label><input type="text" v-model="db_host" readonly /><br>
                     <label>Database: </label><input type="text" v-model="db_name" readonly /><br>
-                    <label>User: </label><input type="text" v-model="db_user" readonly/><br>
+                    <label>User: </label><input type="text" v-model="db_user" readonly /><br>
                     <label>Password: </label><input type="text" v-model="db_password" readonly />
 
                     <div v-if="loader">
@@ -280,10 +280,8 @@
                     <div v-if="err" class="alert alert-danger" role="alert">{{err}}</div>
 
                     <br>
-                    <input type="button" name="previous" @click="next_panel_three_previous"
-                        class="previous action-button-previous" value="Previous" />
-                    <input type="button" name="submit" @click="next_panel_three" class="submit action-button"
-                        value="Submit" />
+                    <input type="button" name="previous" @click="next_panel_three_previous" class="previous action-button-previous" value="Previous" />
+                    <input type="button" name="submit" @click="next_panel_three" class="submit action-button" value="Deploy" />
 
                 </fieldset>
 
@@ -398,7 +396,7 @@
                 },
 
                 go_to_subdomain: function () {
-                    window.location.href = "http://" + this.subdomain + ".techcamp.app/";
+                    window.open("http://" + this.subdomain + ".techcamp.app/", "_blank");
                 },
 
                 next_panel_one: function () {
