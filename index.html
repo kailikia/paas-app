@@ -494,8 +494,8 @@
                     this.destroy_app(name);
                 },
 
-                destroy_app : function () {
-                    return axios.post(this.api_url + `/destroy-app/${sub}`, {
+                destroy_app : function (subd) {
+                    return axios.post(this.api_url + `/destroy-app/${subd}`, {
                         subdomain: this.subdomain
                     })
                         .then(function (response) {
