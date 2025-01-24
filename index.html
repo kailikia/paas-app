@@ -341,7 +341,7 @@
 
                 <tr v-for="x in db_data"  >
                     <td>{{x.id}}</td>
-                    <td>{{x.name}}.techcamp.app</td>
+                    <td><a :href="`https://${x.name}.techcamp.app`" target="_blank"> {{x.name}}.techcamp.app </a></td>
                     <td>{{x.github_url}}</td>
                     <td>{{x.port}} </td>
                     <td> <button @click="openModal(x.name)" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#staticBackdrop" > Status </button> </td>
