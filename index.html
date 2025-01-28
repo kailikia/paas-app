@@ -394,7 +394,7 @@
 
     <!-- Subdomain Destroy Modal -->
 
-<div v-if="isModalOpen" class="modal fade" id="destroyModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal fade" id="destroyModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
     <div class="modal-content">
         <div class="modal-header">
@@ -564,7 +564,6 @@
                         .catch(function (error) {
                             return error
                         });
-                    this.isModalOpen = false;
                 },
 
                 fetchlogs(subd){
