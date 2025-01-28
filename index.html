@@ -332,8 +332,11 @@
                     <th scope="col">Github url</th>
                     <th scope="col">Port</th>
                     <th scope="col">Status</th>
-                    <th scope="col">Action </th> 
+                    <th scope="col">Re build</th> 
                     <th scope="col">Destroy </th> 
+                    <th scope="col">Acme </th> 
+                    <th scope="col">Docker </th> 
+                    <th scope="col">Nginx </th> 
 
                 </tr>
                 </thead>
@@ -347,6 +350,9 @@
                     <td> <button @click="openModal(x.name)" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#staticBackdrop" > Status </button> </td>
                     <td> <button class="btn btn-light"> Re Build  </button> </td>
                     <td> <button @click="openModal1(x.name)" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#destroyModal" > Destroy </button> </td>
+                    <td> <button @click="openModal2(x.name)" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#staticBackdrop" > Acme </button> </td>
+                    <td> <button @click="openModal3(x.name)" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#staticBackdrop" > Docker </button> </td>
+                    <td> <button @click="openModal4(x.name)" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#staticBackdrop" > Nginx </button> </td>
 
                 </tr>
                 
@@ -492,6 +498,63 @@
                     this.sub_name = name;
                     
                     this.destroy_app(name);
+                },
+                openModal2(name) {
+                    this.sub_name = name;
+                    
+                    this.acme_logs(name);
+                },
+                openModal3(name) {
+                    this.sub_name = name;
+                    
+                    this.nginx_logs(name);
+                },
+                openModal4(name) {
+                    this.sub_name = name;
+                    
+                    this.dock_logs(name);
+                },
+
+                acme_logs(subd){
+                    fetch(this.api_url + `/logs/acme/${subd}`)
+                    .then(response => response.json())
+                    .then(data => {
+
+                        console.log('Acme logs:', JSON.stringify(data) ); 
+                        this.sub_logs = data;
+
+                    }).catch(error => {
+                        console.error('Error fetching logs:', error);
+                      });
+
+                },
+
+                dock_logs(subd){
+                    fetch(this.api_url + `/logs/docker/${subd}`)
+                    .then(response => response.json())
+                    .then(data => {
+
+                        console.log('Docker logs:', JSON.stringify(data) ); 
+                        this.sub_logs = data;
+
+                    }).catch(error => {
+                        console.error('Error fetching logs:', error);
+                      });
+
+                },
+
+                nginx_logs(subd){
+                    fetch(this.api_url + `/logs/nginx/${subd}`)
+                    .then(response => response.json())
+                    .then(data => {
+
+                        console.log('Nginx logs:', JSON.stringify(data) ); 
+                        this.sub_logs = data;
+
+                    }).catch(error => {
+                        console.error('Error fetching logs:', error);
+                      });
+
                 },
 
                 destroy_app : function (subd) {
