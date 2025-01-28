@@ -394,7 +394,7 @@
 
     <!-- Subdomain Destroy Modal -->
 
-<div class="modal fade" id="destroyModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div v-if="isModalOpen" class="modal fade" id="destroyModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
     <div class="modal-content">
         <div class="modal-header">
@@ -405,7 +405,6 @@
             <h6 class="">Are you sure you want to destroy this application for </h6>
             <h6> Subdomain : {{sub_name}}.techcamp.app ?</h6>
             
-
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
@@ -496,8 +495,7 @@
                 },
                 openModal1(name) {
                     this.sub_name = name;
-                    
-                    this.destroy_app(name);
+
                 },
                 openModal2(name) {
                     this.sub_name = name;
@@ -520,7 +518,6 @@
                     .then(response => response.json())
                     .then(data => {
 
-                        console.log('Acme logs:', JSON.stringify(data) ); 
                         this.sub_logs = data;
 
                     }).catch(error => {
@@ -534,7 +531,6 @@
                     .then(response => response.json())
                     .then(data => {
 
-                        console.log('Docker logs:', JSON.stringify(data) ); 
                         this.sub_logs = data;
 
                     }).catch(error => {
@@ -548,7 +544,6 @@
                     .then(response => response.json())
                     .then(data => {
 
-                        console.log('Nginx logs:', JSON.stringify(data) ); 
                         this.sub_logs = data;
 
                     }).catch(error => {
@@ -558,6 +553,7 @@
                 },
 
                 destroy_app : function (subd) {
+                    this.sub_name = subd
                     return axios.post(this.api_url + `/destroy-app/${subd}`, {
                         subdomain: this.subdomain
                     })
@@ -568,6 +564,7 @@
                         .catch(function (error) {
                             return error
                         });
+                    this.isModalOpen = false;
                 },
 
                 fetchlogs(subd){
