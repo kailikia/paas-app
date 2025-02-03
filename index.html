@@ -5,12 +5,15 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>TechCamp App Deployment</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 
-    <link rel="stylesheet"  href="https://cdn.datatables.net/2.2.0/css/dataTables.bootstrap5.min.css"  >
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" rel="stylesheet" />
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
 
     <style>
         /*custom font*/
@@ -262,7 +265,8 @@
                     <div class="">
                         <input type="button" name="previous" @click="next_panel_two_previous"
                             class="previous action-button-previous" value="Previous">
-                        <input type="button" name="next" @click="next_panel_two" class="next action-button" value="Next" />
+                        <input type="button" name="next" @click="next_panel_two" class="next action-button"
+                            value="Next" />
                     </div>
                 </fieldset>
 
@@ -283,8 +287,10 @@
                     <div v-if="err" class="alert alert-danger" role="alert">{{err}}</div>
 
                     <br>
-                    <input type="button" name="previous" @click="next_panel_three_previous" class="previous action-button-previous" value="Previous" />
-                    <input type="button" name="submit" @click="next_panel_three" class="submit action-button" value="Deploy" />
+                    <input type="button" name="previous" @click="next_panel_three_previous"
+                        class="previous action-button-previous" value="Previous" />
+                    <input type="button" name="submit" @click="next_panel_three" class="submit action-button"
+                        value="Deploy" />
 
                 </fieldset>
 
@@ -314,150 +320,133 @@
             </form>
         </div>
 
-
         <!-- /.MultiStep Form -->
-
-
         <!--Table to display v-for the subdomain, github url, database, status(subdomain.json in deployed_logs folder)  as modal, button to rebuild-->
 
         <div class="container p-5">
-        
-            <table class="table table-dark caption-top mt-5 " id="dt" >
-                <caption>Registered Sub domains</caption>
 
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Sub Domain</th>
-                    <th scope="col">Github url</th>
-                    <th scope="col">Port</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Re build</th> 
-                    <th scope="col">Destroy </th> 
-                    <th scope="col">Acme </th> 
-                    <th scope="col">Docker </th> 
-                    <th scope="col">Nginx </th> 
+            <div class="table-responsive">
 
-                </tr>
-                </thead>
-                <tbody > 
-
-                <tr v-for="x in db_data"  >
-                    <td>{{x.id}}</td>
-                    <td><a :href="`https://${x.name}.techcamp.app`" target="_blank"> {{x.name}}.techcamp.app </a></td>
-                    <td>{{x.github_url}}</td>
-                    <td>{{x.port}} </td>
-                    <td> <button @click="openModal(x.name)" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#staticBackdrop" > Status </button> </td>
-                    <td> <button class="btn btn-light"> Re Build  </button> </td>
-                    <td> <button @click="openModal1(x.name)" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#destroyModal" > Destroy </button> </td>
-                    <td> <button @click="openModal2(x.name)" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#staticBackdrop" > Acme </button> </td>
-                    <td> <button @click="openModal3(x.name)" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#staticBackdrop" > Docker </button> </td>
-                    <td> <button @click="openModal4(x.name)" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#staticBackdrop" > Nginx </button> </td>
-
-                </tr>
-                
-                </tbody>
-            </table>
-
-        </div>
-
-
-    <!--End of Table to display v-for the subdomain, github url, database, status(subdomain.json in deployed_logs folder)  as modal, button to rebuild-->
-
-
-
-    <!-- Subdomain Deploy Status Modal -->
-
-
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title fs-5" id="staticBackdropLabel">Application Deployment Status </h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <table class="table table-dark caption-top mt-5 " id="myTable">
+                    <!-- <caption>Registered Sub domains</caption> -->
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Sub Domain</th>
+                            <th scope="col">Github url</th>
+                            <th scope="col">Port</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Re build</th>
+                            <th scope="col">Destroy </th>
+                            <th scope="col">Acme </th>
+                            <th scope="col">Docker </th>
+                            <th scope="col">Nginx </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="x in db_data">
+                            <td>{{x.id}}</td>
+                            <td><a :href="`https://${x.name}.techcamp.app`" target="_blank"> {{x.name}}.techcamp.app
+                                </a></td>
+                            <td>{{x.github_url}}</td>
+                            <td>{{x.port}} </td>
+                            <td> <button @click="openModal(x.name)" class="btn btn-light" data-bs-toggle="modal"
+                                    data-bs-target="#staticBackdrop"> Status </button> </td>
+                            <td> <button class="btn btn-light"> Re Build </button> </td>
+                            <td> <button @click="openModal1(x.name)" class="btn btn-light" data-bs-toggle="modal"
+                                    data-bs-target="#destroyModal"> Destroy </button> </td>
+                            <td> <button @click="openModal2(x.name)" class="btn btn-light" data-bs-toggle="modal"
+                                    data-bs-target="#staticBackdrop"> Acme </button> </td>
+                            <td> <button @click="openModal3(x.name)" class="btn btn-light" data-bs-toggle="modal"
+                                    data-bs-target="#staticBackdrop"> Docker </button> </td>
+                            <td> <button @click="openModal4(x.name)" class="btn btn-light" data-bs-toggle="modal"
+                                    data-bs-target="#staticBackdrop"> Nginx </button> </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <div class="modal-body text-success">
-                <h6 class="text-center  text-black">Subdomain : {{sub_name}}.techcamp.app</h6>
-                <ol>
-                    <li v-for="det in sub_logs" :key="det.id">{{ det.message }}</li>
-                </ol>
+
+        </div>
+
+
+        <!--End of Table to display v-for the subdomain, github url, database, status(subdomain.json in deployed_logs folder)  as modal, button to rebuild-->
+
+        <!-- Subdomain Deploy Status Modal -->
+
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title fs-5" id="staticBackdropLabel">Application Deployment Status </h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-success">
+                        <h6 class="text-center  text-black">Subdomain : {{sub_name}}.techcamp.app</h6>
+                        <ol>
+                            <li v-for="det in sub_logs" :key="det.id">{{ det.message }}</li>
+                        </ol>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-dark" data-bs-dismiss="modal">OK</button>
+                    </div>
+                </div>
             </div>
-            <div class="modal-footer">
-            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">OK</button>
+        </div>
+
+
+        <!-- End of Subdomain Deploy Status Modal -->
+
+        <!-- Subdomain Destroy Modal -->
+
+        <div class="modal fade" id="destroyModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title fs-5" id="staticBackdropLabel">Destroy Application Status </h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <h6 class="">Are you sure you want to destroy this application for </h6>
+                        <h6> Subdomain : {{sub_name}}.techcamp.app ?</h6>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
+
+                        <button @click="destroy_app" type="submit" class="btn btn-danger"
+                            data-bs-dismiss="modal">Yes</button>
+
+                    </div>
+                </div>
             </div>
         </div>
-        </div>
-    </div>
 
 
-    <!-- End of Subdomain Deploy Status Modal -->
-
-    <!-- Subdomain Destroy Modal -->
-
-<div class="modal fade" id="destroyModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h4 class="modal-title fs-5" id="staticBackdropLabel">Destroy Application Status </h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body text-center">
-            <h6 class="">Are you sure you want to destroy this application for </h6>
-            <h6> Subdomain : {{sub_name}}.techcamp.app ?</h6>
-            
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
-
-            <button @click="destroy-app" type="submit" class="btn btn-danger" data-bs-dismiss="modal">Yes</button>
-
-        </div>
-    </div>
-    </div>
-</div>
-
-
-<!-- End of Subdomain Destroy Modal -->
+        <!-- End of Subdomain Destroy Modal -->
 
 
 
     </div>
-    
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.js"
-        integrity="sha512-uOsadAxj/qq4rCTYfzn0z+JjaUyXL0l4ufDjCS+RKnIllv0JTdY30i8DgWYX4TIQvxH62aVF27BCPcghyCcIHg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.0/vue.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.25.0/axios.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-2.1.1.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.0/vue.js"
-        integrity="sha512-jbjz/TwyUj0Jsr2KSxpenMkrGMt6pQEvh3PukVKdTVlkSsfxuJYVHouydXgiHbuB99HO3bcw3BfTWPk5awFMLQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- DataTables JS -->
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.25.0/axios.js"
-        integrity="sha512-II/TvxJGs27N3NEu/WWRFtyhBdSByZwS5ovX1vHXVsi2JXj0I5hRvHwgBPKbzZDk0wsKVDoEUEI8rAYGEF394A=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js" integrity="sha512-BkpSL20WETFylMrcirBahHfSnY++H2O1W+UnEEO4yNIl+jI2+zowyoGJpbtk6bx97fBXf++WJHSSK2MV4ghPcg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
-    <script src="https://cdn.datatables.net/2.2.0/js/dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/2.2.0/js/dataTables.bootstrap5.min.js"></script>
-
-    <script>
-   
-        $(document).ready(function(){
-            $('#da').DataTable();
+    <!-- <script>
+        $(document).ready(function () {
+            $('#myTable').DataTable(); // Initialize DataTable
         });
-
-        $('#dt').DataTable({
-            pageLength: 10,
-            filter: true,
-            scroller: true
-        });
-    </script>
-
+    </script> -->
 
     <script>
 
@@ -490,70 +479,70 @@
 
                 openModal(name) {
                     this.sub_name = name;
-                    
+
                     this.fetchlogs(name);
                 },
                 openModal1(name) {
                     this.sub_name = name;
+                    this.destroy_app(name)
 
                 },
                 openModal2(name) {
                     this.sub_name = name;
-                    
+
                     this.acme_logs(name);
                 },
                 openModal3(name) {
                     this.sub_name = name;
-                    
+
                     this.nginx_logs(name);
                 },
                 openModal4(name) {
                     this.sub_name = name;
-                    
+
                     this.dock_logs(name);
                 },
 
-                acme_logs(subd){
+                acme_logs(subd) {
                     fetch(this.api_url + `/logs/acme/${subd}`)
-                    .then(response => response.json())
-                    .then(data => {
+                        .then(response => response.json())
+                        .then(data => {
 
-                        this.sub_logs = data;
+                            this.sub_logs = data;
 
-                    }).catch(error => {
-                        console.error('Error fetching logs:', error);
-                      });
+                        }).catch(error => {
+                            console.error('Error fetching logs:', error);
+                        });
 
                 },
 
-                dock_logs(subd){
+                dock_logs(subd) {
                     fetch(this.api_url + `/logs/docker/${subd}`)
-                    .then(response => response.json())
-                    .then(data => {
+                        .then(response => response.json())
+                        .then(data => {
 
-                        this.sub_logs = data;
+                            this.sub_logs = data;
 
-                    }).catch(error => {
-                        console.error('Error fetching logs:', error);
-                      });
+                        }).catch(error => {
+                            console.error('Error fetching logs:', error);
+                        });
 
                 },
 
-                nginx_logs(subd){
+                nginx_logs(subd) {
                     fetch(this.api_url + `/logs/nginx/${subd}`)
-                    .then(response => response.json())
-                    .then(data => {
+                        .then(response => response.json())
+                        .then(data => {
 
-                        this.sub_logs = data;
+                            this.sub_logs = data;
 
-                    }).catch(error => {
-                        console.error('Error fetching logs:', error);
-                      });
+                        }).catch(error => {
+                            console.error('Error fetching logs:', error);
+                        });
 
                 },
 
-                destroy_app : function (subd) {
-                    this.sub_name = subd
+                destroy_app: function (subd) {
                     return axios.post(this.api_url + `/destroy-app/${subd}`, {
                         subdomain: this.subdomain
                     })
@@ -566,37 +555,47 @@
                         });
                 },
 
-                fetchlogs(subd){
+                fetchlogs(subd) {
                     fetch(this.api_url + `/subdomain-logs/${subd}`)
-                    .then(response => response.json())
-                    .then(data => {
+                        .then(response => response.json())
+                        .then(data => {
 
-                        console.log('Sub domain logs:', JSON.stringify(data) ); 
-                        this.sub_logs = data;
+                            console.log('Sub domain logs:', JSON.stringify(data));
+                            this.sub_logs = data;
 
-                    }).catch(error => {
-                        console.error('Error fetching logs:', error);
-                      });
+                        }).catch(error => {
+                            console.error('Error fetching logs:', error);
+                        });
 
                 },
 
-                fetchdata(){
-                    
+                fetchdata() {
                     fetch(this.api_url + '/db-data')
-                    .then(response => response.json())
-                    .then(data => {
-                    
-                        data.forEach(item => {
-                            // Modify or process items here if needed before adding to the array
-                            this.db_data.push(item)
-                             
+                        .then(response => response.json())
+                        .then(data => {
+                            data.forEach(item => {
+                                // Modify or process items here if needed before adding to the array
+                                this.db_data.push(item);
+                            });
+
+                            // Ensure DOM updates are complete, then initialize DataTables
+                            this.$nextTick(() => {
+                         
+                                if ($.fn.DataTable.isDataTable('#myTable')) {
+                                    $('#myTable').DataTable().destroy();  // Destroy previous instance if exists
+                                }
+                                $('#myTable').DataTable({
+                                    paging: true,
+                                    searching: true,
+                                    ordering: true,
+                                    order: [[0, 'desc']]
+                                });
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error fetching db:', error);
                         });
-
-
-                    }).catch(error => {
-                        console.error('Error fetching db:', error);
-                      });
-                    },
+                },
 
                 check_availability: function () {
                     return axios.post(this.api_url + '/sub-domain-availability', {
@@ -744,7 +743,7 @@
                         checker = setInterval(function () {
 
                             v.deploy_progress().then((res) => {
-                                console.log("looping now")
+                                console.log("Looping res is -------", res)
                                 if (res.length > 1) {
                                     v.loader = false
                                     v.deploy_res = res
@@ -789,7 +788,6 @@
 
             mounted() {
                 this.fetchdata();
-                
             },
 
         });
@@ -797,7 +795,7 @@
 
     </script>
 
-   
+
 
 </body>
 
