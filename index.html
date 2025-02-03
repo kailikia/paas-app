@@ -572,8 +572,10 @@
                     return axios.post(this.api_url + `/rebuild-app/${sub}`,  {
                         subdomain: this.subdomain
                     })
-                    .then(function (response) {
-                        return response.data.subdomain;
+                    .then( data => {
+                        this.sub_logs = data;
+
+                        console.log("Rebuild Started ")
                     })
                     .catch(function (error) {
                         return error
