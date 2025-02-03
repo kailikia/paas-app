@@ -351,16 +351,23 @@
                             <td>{{x.github_url}}</td>
                             <td>{{x.port}} </td>
                             <td> <button @click="openModal(x.name)" class="btn btn-light" data-bs-toggle="modal"
-                                    data-bs-target="#staticBackdrop"> Status </button> </td>
-                            <td> <button class="btn btn-light"> Re Build </button> </td>
-                            <td> <button @click="openModal1(x.name)" class="btn btn-light" data-bs-toggle="modal"
-                                    data-bs-target="#destroyModal"> Destroy </button> </td>
+                                    data-bs-target="#staticBackdrop"> Status </button> 
+                            </td>
+                            <td> <button @click="openModal5(x.name)" class="btn btn-light" data-bs-toggle="modal"
+                                data-bs-target="#staticBackdrop"> Rebuild </button> 
+                            </td>
+                            <td> <button @click="openModal1(x.name)" class="btn btn-danger" data-bs-toggle="modal"
+                                    data-bs-target="#destroyModal"> Destroy </button>
+                            </td>
                             <td> <button @click="openModal2(x.name)" class="btn btn-light" data-bs-toggle="modal"
-                                    data-bs-target="#staticBackdrop"> Acme </button> </td>
+                                    data-bs-target="#staticBackdrop"> Acme </button> 
+                            </td>
                             <td> <button @click="openModal3(x.name)" class="btn btn-light" data-bs-toggle="modal"
-                                    data-bs-target="#staticBackdrop"> Docker </button> </td>
+                                    data-bs-target="#staticBackdrop"> Docker </button> 
+                            </td>
                             <td> <button @click="openModal4(x.name)" class="btn btn-light" data-bs-toggle="modal"
-                                    data-bs-target="#staticBackdrop"> Nginx </button> </td>
+                                    data-bs-target="#staticBackdrop"> Nginx </button> 
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -503,6 +510,12 @@
                     this.dock_logs(name);
                 },
 
+                openModal5(name) {
+                    this.sub_name = name;
+
+                    this.rebuild(name);
+                },
+
                 acme_logs(subd) {
                     fetch(this.api_url + `/logs/acme/${subd}`)
                         .then(response => response.json())
@@ -553,6 +566,19 @@
                         .catch(function (error) {
                             return error
                         });
+                },
+
+                rebuild(sub) {
+                    return axios.post(this.api_url + `/rebuild-app/${sub}`,  {
+                        subdomain: this.subdomain
+                    })
+                    .then(function (response) {
+                        return response.data.subdomain;
+                    })
+                    .catch(function (error) {
+                        return error
+                    });
+                    
                 },
 
                 fetchlogs(subd) {
