@@ -298,6 +298,10 @@
                     <h2 class="fs-title">Deployment Progress For {{this.subdomain}}</h2>
 
                     <div v-if="deploy_res">
+                        <!-- <li v-for="item in server_logs" class="fs-subtitle">
+                            <b> {{item}}</b> 
+                        </li> -->
+
                         <li v-for="r in deploy_res" class="fs-subtitle">
                             <b>Step {{r.step}}:</b> {{r.message}}
                         </li>
@@ -831,7 +835,7 @@
 
             mounted() {
                 this.fetchdata();
-                this.server_logs();
+                
             },
 
         });
