@@ -479,6 +479,7 @@
                 api_url: "http://134.209.24.19:4001",
                 db_data: [],
                 sub_logs: [],
+                serv_logs: [],
                 sub_name: null,
             },
 
@@ -548,6 +549,20 @@
                         .then(data => {
 
                             this.sub_logs = data;
+
+                        }).catch(error => {
+                            console.error('Error fetching logs:', error);
+                        });
+
+                },
+
+                server_logs(subd) {
+                    fetch(this.api_url + `/logs/server/${subd}`)
+                        .then(response => response.json())
+                        .then(data => {
+
+                            this.serv_logs = data;
+                            console.log("server logs :", this.serv_logs)
 
                         }).catch(error => {
                             console.error('Error fetching logs:', error);
@@ -816,6 +831,7 @@
 
             mounted() {
                 this.fetchdata();
+                this.server_logs();
             },
 
         });
