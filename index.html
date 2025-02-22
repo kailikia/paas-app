@@ -374,10 +374,10 @@
                                     data-bs-target="#staticBackdrop"> Acme </button> 
                             </td>
                             <td> <button @click="openModal3(x.name)" class="btn btn-light" data-bs-toggle="modal"
-                                    data-bs-target="#staticBackdrop"> Docker </button> 
+                                    data-bs-target="#staticBackdrop"> Nginx </button> 
                             </td>
                             <td> <button @click="openModal4(x.name)" class="btn btn-light" data-bs-toggle="modal"
-                                    data-bs-target="#staticBackdrop"> Nginx </button> 
+                                    data-bs-target="#staticBackdrop"> Docker </button> 
                             </td>
                         </tr>
                     </tbody>
@@ -568,12 +568,17 @@
                 },
 
                 server_logs() {
-                    this.subdomain = subd
+                    subd = this.subdomain
                     fetch(this.api_url + `/logs/server/${subd}`)
                         .then(response => response.json())
                         .then(data => {
 
                             this.serv_logs = data;
+
+                            if (data.complete == true) {
+                                this.check_deploy = true;
+                            }
+
                             console.log("server logs :", this.serv_logs)
 
                         }).catch(error => {
@@ -791,7 +796,7 @@
                     this.panel4 = true;
 
                     v = this;
-                    this.server_logs(subd)
+                    this.server_logs()
                     // Axios to check the progress 
 
                     if (!v.check_deploy) {
@@ -804,7 +809,6 @@
                                     v.loader = false
                                     v.deploy_res = res
                                     v.loader = false;
-                                    v.check_deploy = true
                                     console.log("Progress is ", res)
                                     v.next_panel_four();
                                 }
