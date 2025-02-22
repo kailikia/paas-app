@@ -299,12 +299,12 @@
 
                     <div>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-6" v-if="deploy_res">
                                 <li v-for="r in deploy_res" class="fs-subtitle">
                                     <b>Step {{r.step}}:</b> {{r.message}}
                                 </li>
                             </div>
-                            <div class="col-md-6" v-if="deploy_res">
+                            <div class="col-md-6">
                                 <li v-for="item in server_logs" class="fs-subtitle">
                                     <b> {{item}} </b> 
                                 </li>
