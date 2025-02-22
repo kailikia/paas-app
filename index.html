@@ -577,10 +577,6 @@
 
                             this.serv_logs = data;
 
-                            if (data.complete == true) {
-                                this.check_deploy = true;
-                            }
-
                             console.log("server logs :", this.serv_logs)
 
                         }).catch(error => {
@@ -811,6 +807,7 @@
                                     v.loader = false
                                     v.deploy_res = res
                                     v.loader = false;
+                                    v.check_deploy = true
                                     console.log("Progress is ", res)
                                     v.next_panel_four();
                                 }
