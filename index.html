@@ -298,13 +298,20 @@
                     <h2 class="fs-title">Deployment Progress For {{this.subdomain}}</h2>
 
                     <div v-if="deploy_res">
-                        <!-- <li v-for="item in server_logs" class="fs-subtitle">
-                            <b> {{item}}</b> 
-                        </li> -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <li v-for="r in deploy_res" class="fs-subtitle">
+                                    <b>Step {{r.step}}:</b> {{r.message}}
+                                </li>
+                            </div>
+                            <div class="col-md-6">
+                                <li v-for="item in server_logs" class="fs-subtitle">
+                                    <b> {{item}} </b> 
+                                </li>
+                            </div>
 
-                        <li v-for="r in deploy_res" class="fs-subtitle">
-                            <b>Step {{r.step}}:</b> {{r.message}}
-                        </li>
+                        </div>
+                        
                     </div>
 
                     <div v-if="loader">
@@ -560,7 +567,8 @@
 
                 },
 
-                server_logs(subd) {
+                server_logs() {
+                    this.subdomain = subd
                     fetch(this.api_url + `/logs/server/${subd}`)
                         .then(response => response.json())
                         .then(data => {
@@ -783,6 +791,7 @@
                     this.panel4 = true;
 
                     v = this;
+                    this.server_logs(subd)
                     // Axios to check the progress 
 
                     if (!v.check_deploy) {
