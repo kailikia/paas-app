@@ -297,27 +297,27 @@
                 <fieldset v-if="panel4">
                     <h2 class="fs-title">Deployment Progress For {{this.subdomain}}</h2>
 
-                    <div class="container h-100">
+                    <div class="container h-100 mt-4">
                         <div class="row">
-                            <div class="col-md-6" v-if="deploy_res">
-                                <li v-for="r in deploy_res" class="fs-subtitle">
-                                    <b>Step {{r.step}}:</b> {{r.message}}
-                                </li>
-                            </div>
-                            <div class="col-md-6">
-                                <ul v-if="server_logs">
-                                    <li class="fs-subtitle" v-for="det in sub_logs" :key="det.id">
-                                        <b> {{det.subdomain}} </b>
-                                        <b> {{det.acme}} </b> 
-                                        <b> {{det.docker}} </b> 
-                                        <b> {{det.success-report}} </b>  
-                                        <b> {{det.nginx-files}} </b> 
-                                        <b> {{det.symlink}} </b> 
-                                        <b> {{det.restart}} </b>
-                                        <b> {{det.complete}} </b>  
- 
+                            <div class="col-md-6 text-start" v-if="deploy_res">
+                                <ul class="list-unstyled">
+                                    <li v-for="r in deploy_res" class="fs-subtitle">
+                                        <b>Step {{r.step}}:</b> {{r.message}}
                                     </li>
                                 </ul>
+                            </div>
+                            <div class="col-md-6 text-start">
+                                <ol>
+                                    <li class="fs-subtitle"> <b>Subdomain : {{serv_logs.subdomain}} </b>      </li>
+                                    <li class="fs-subtitle"> <b>ACME : {{serv_logs.acme}} </b>           </li>
+                                    <li class="fs-subtitle"> <b>Docker : {{serv_logs.docker}} </b>         </li>
+                                    <li class="fs-subtitle"> <b>Success Report : {{serv_logs["success-report"]}} </b> </li>
+                                    <li class="fs-subtitle"> <b>Nginx Config : {{serv_logs["nginx-files"]}} </b>    </li>
+                                    <li class="fs-subtitle"> <b>Symlink : {{serv_logs.symlink}} </b>        </li>
+                                    <li class="fs-subtitle"> <b>Restart : {{serv_logs.restart}} </b>        </li>
+                                    <li class="fs-subtitle"> <b>Complete : {{serv_logs.complete}} </b>       </li>
+ 
+                                </ol>
                             </div>
 
                         </div>
@@ -500,7 +500,7 @@
                 api_url: "http://134.209.24.19:4001",
                 db_data: [],
                 sub_logs: [],
-                serv_logs: [],
+                serv_logs: {},
                 sub_name: null,
             },
 
@@ -577,9 +577,9 @@
 
                 },
 
-                server_logs() {
+                async server_logs() {
                     subd = this.subdomain
-                    fetch(this.api_url + `/logs/server/${subd}`)
+                    await fetch(this.api_url + `/logs/server/${subd}`)
                         .then(response => response.json())
                         .then(data => {
 
@@ -803,7 +803,13 @@
                     this.panel4 = true;
 
                     v = this;
-                    this.server_logs()
+
+                    this.server_logs().then((item) => {
+                        console.log(item)
+                    });
+
+                    this.interval = setInterval(this.server_logs, 5000);
+
                     // Axios to check the progress 
 
                     if (!v.check_deploy) {
@@ -857,6 +863,10 @@
             mounted() {
                 this.fetchdata();
                 
+            },
+
+            beforeUnmount() {
+                clearInterval(this.interval); // Clean up interval on component destroy
             },
 
         });
