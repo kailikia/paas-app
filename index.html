@@ -297,14 +297,14 @@
                 <fieldset v-if="panel4">
                     <h2 class="fs-title">Deployment Progress For {{this.subdomain}}</h2>
 
-                    <div v-if="deploy_res">
+                    <div>
                         <div class="row">
                             <div class="col-md-6">
                                 <li v-for="r in deploy_res" class="fs-subtitle">
                                     <b>Step {{r.step}}:</b> {{r.message}}
                                 </li>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6" v-if="deploy_res">
                                 <li v-for="item in server_logs" class="fs-subtitle">
                                     <b> {{item}} </b> 
                                 </li>
@@ -350,8 +350,8 @@
                             <th scope="col">Re build</th>
                             <th scope="col">Destroy </th>
                             <th scope="col">Acme </th>
-                            <th scope="col">Docker </th>
                             <th scope="col">Nginx </th>
+                            <th scope="col">Docker </th>
                         </tr>
                     </thead>
                     <tbody>
