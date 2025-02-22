@@ -297,7 +297,7 @@
                 <fieldset v-if="panel4">
                     <h2 class="fs-title">Deployment Progress For {{this.subdomain}}</h2>
 
-                    <div>
+                    <div class="container h-100">
                         <div class="row">
                             <div class="col-md-6" v-if="deploy_res">
                                 <li v-for="r in deploy_res" class="fs-subtitle">
@@ -305,9 +305,11 @@
                                 </li>
                             </div>
                             <div class="col-md-6">
-                                <li v-for="item in server_logs" class="fs-subtitle">
-                                    <b> {{item}} </b> 
-                                </li>
+                                <ul v-if="server_logs">
+                                    <li v-for="item in server_logs" class="fs-subtitle">
+                                        <b> {{item}} </b> 
+                                    </li>
+                                </ul>
                             </div>
 
                         </div>
