@@ -297,9 +297,15 @@
                 <fieldset v-if="panel4">
                     <h2 class="fs-title">Deployment Progress For {{this.subdomain}}</h2>
 
-                    <div class="container h-100 mt-4">
+                    <div class="container mt-4">
                         <div class="row">
-                            <div class="col-md-6 text-start" v-if="deploy_res">
+                            <div class="col-md-6 text-start " v-if="deploy_res" style="height: 100%;">
+                                <div v-if="loader">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                </div>
+
+                                <div v-if="err" class="alert alert-danger" role="alert">{{err}}</div>
+
                                 <ul class="list-unstyled">
                                     <li v-for="r in deploy_res" class="fs-subtitle">
                                         <b>Step {{r.step}}:</b> {{r.message}}
@@ -323,12 +329,6 @@
                         </div>
                         
                     </div>
-
-                    <div v-if="loader">
-                        <i class="fas fa-spinner fa-spin"></i>
-                    </div>
-
-                    <div v-if="err" class="alert alert-danger" role="alert">{{err}}</div>
 
                     <br>
                     <div v-if="check_deploy">
@@ -374,10 +374,10 @@
                             <td> <button @click="openModal(x.name)" class="btn btn-light" data-bs-toggle="modal"
                                     data-bs-target="#staticBackdrop"> Status </button> 
                             </td>
-                            <td> <button @click="openModal5(x.name)" class="btn btn-light" data-bs-toggle="modal"
-                                data-bs-target="#staticBackdrop"> Rebuild </button> 
+                            <td> <button @click="rebuildModal(x.name)" class="btn btn-light" data-bs-toggle="modal"
+                                data-bs-target="#rebuildModal"> Rebuild </button> 
                             </td>
-                            <td> <button @click="openModal1(x.name)" class="btn btn-danger" data-bs-toggle="modal"
+                            <td> <button @click="destroyModal(x.name)" class="btn btn-danger" data-bs-toggle="modal"
                                     data-bs-target="#destroyModal"> Destroy </button>
                             </td>
                             <td> <button @click="openModal2(x.name)" class="btn btn-light" data-bs-toggle="modal"
@@ -422,10 +422,9 @@
             </div>
         </div>
 
-
         <!-- End of Subdomain Deploy Status Modal -->
 
-        <!-- Subdomain Destroy Modal -->
+        <!-- App Destroy Modal -->
 
         <div class="modal fade" id="destroyModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
             aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -451,10 +450,35 @@
             </div>
         </div>
 
+        <!-- End of App Destroy Modal -->
 
-        <!-- End of Subdomain Destroy Modal -->
+        <!--  App Rebuild Modal -->
 
+        <div class="modal fade" id="rebuildModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title fs-5" id="staticBackdropLabel">Rebuild Application Status </h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <h6 class="">Are you sure you want to rebuild this application for </h6>
+                        <h6> Subdomain : {{sub_name}}.techcamp.app ?</h6>
 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
+
+                        <button @click="rebuild_app" type="submit" class="btn btn-danger"
+                            data-bs-dismiss="modal">Yes</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- End of App Rebuild Modal -->
 
     </div>
 
@@ -492,6 +516,7 @@
                 err: "",
                 deploy_res: "",
                 check_deploy: false,
+                deploy_complete:false,
                 loader: false,
                 db_host: "localhost",
                 db_name: "",
@@ -508,34 +533,30 @@
 
                 openModal(name) {
                     this.sub_name = name;
-
                     this.fetchlogs(name);
                 },
-                openModal1(name) {
-                    this.sub_name = name;
-                    this.destroy_app(name)
-
-                },
+                
                 openModal2(name) {
                     this.sub_name = name;
-
                     this.acme_logs(name);
                 },
+
                 openModal3(name) {
                     this.sub_name = name;
-
                     this.nginx_logs(name);
                 },
+
                 openModal4(name) {
                     this.sub_name = name;
-
                     this.dock_logs(name);
                 },
 
-                openModal5(name) {
+                destroyModal(name) {
                     this.sub_name = name;
+                },
 
-                    this.rebuild(name);
+                rebuildModal(name) {
+                    this.sub_name = name;
                 },
 
                 acme_logs(subd) {
@@ -584,8 +605,11 @@
                         .then(data => {
 
                             this.serv_logs = data;
-
-                            console.log("server logs :", this.serv_logs)
+                            if (data.complete == 'true') {
+                                this.check_deploy = true
+                                console.log("server logs complete:", this.serv_logs)
+    
+                            }
 
                         }).catch(error => {
                             console.error('Error fetching logs:', error);
@@ -607,35 +631,6 @@
 
                 },
 
-                destroy_app: function (subd) {
-                    return axios.post(this.api_url + `/destroy-app/${subd}`, {
-                        subdomain: this.subdomain
-                    })
-                        .then(function (response) {
-                            console.log('destroy res:', response.data)
-                            return response.data.subdomain;
-                        })
-                        .catch(function (error) {
-                            return error
-                        });
-                },
-
-                rebuild(sub) {
-                    return axios.post(this.api_url + `/rebuild-app/${sub}`,  {
-                        subdomain: this.subdomain
-                    })
-                    .then( data => {
-                        this.sub_logs = data;
-
-                        console.log("Rebuild Started ")
-                    })
-                    .catch(function (error) {
-                        return error
-                    });
-                    
-                },
-
-                
                 fetchdata() {
                     fetch(this.api_url + '/db-data')
                         .then(response => response.json())
@@ -662,6 +657,41 @@
                         .catch(error => {
                             console.error('Error fetching db:', error);
                         });
+                },
+                
+                destroy_app: function () {
+                    subd = this.sub_name
+                    return axios.post(this.api_url + `/destroy-app/${subd}`, {
+                        subdomain: this.subdomain
+                    })
+                    .then(function (response) {
+                        console.log('Destroy response:', response.data)
+                        return response.data;
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                    })
+                    .catch(function (error) {
+                        return error
+                    });
+                },
+
+                rebuild_app: function () {
+                    subd = this.sub_name
+
+                    return axios.post(this.api_url + `/rebuild-app/${sub}`,  {
+                        subdomain: this.subdomain
+                    })
+                    .then(function (response) {
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                        console.log('Rebuild response:', response)
+                        return response;
+                    })
+                    .catch(function (error) {
+                        return error
+                    });
                 },
 
                 check_availability: function () {
@@ -696,12 +726,15 @@
                     return axios.post(this.api_url + '/deploy-progress', {
                         subdomain: this.subdomain
                     })
-                        .then(function (response) {
-                            return response.data;
-                        })
-                        .catch(function (error) {
-                            return error
-                        });
+                    .then(function (response) {
+
+                        res = response.data
+                        
+                        return res
+                    })
+                    .catch(function (error) {
+                        return error
+                    });
                 },
 
                 go_to_subdomain: function () {
@@ -804,39 +837,36 @@
 
                     v = this;
 
-                    this.server_logs().then((item) => {
-                        console.log(item)
-                    });
+                    // Axios to check the deployment progress 
+                    
+                    checker = setInterval(() => {
+                        if (!v.deploy_complete) {
 
-                    this.interval = setInterval(this.server_logs, 5000);
-
-                    // Axios to check the progress 
-
-                    if (!v.check_deploy) {
-
-                        checker = setInterval(function () {
-
-                            v.deploy_progress().then((res) => {
-                                console.log("Looping res is -------", res)
-                                if (res.length > 1) {
-                                    v.loader = false
-                                    v.deploy_res = res
-                                    v.loader = false;
-                                    v.check_deploy = true
-                                    console.log("Progress is ", res)
-                                    v.next_panel_four();
+                            this.deploy_progress().then((res) => {
+                                this.deploy_res = res
+                                this.loader = false;
+        
+                                if (res.length > 1){
+                                    this.loader = false;
+        
+                                    this.deploy_complete = true;
+                                    console.log("Deploy progress complete:", this.deploy_res)
                                 }
-                                else {
-                                    v.deploy_res = "";
-                                }
-                            })
-                        }, 3000);
-                    }
-                    else {
-                        clearInterval(checker)
-                        console.log("yees")
+                            });
+                        };
+                    }, 5000);     
+                        
 
-                    }
+                    // Getting server logs every 5 secs
+                    interv = setInterval(() => {
+                        if (!v.check_deploy) {
+                            this.server_logs();
+
+                        }
+                    }, 10000);
+
+                                           
+                       
 
                 },
 
@@ -866,7 +896,6 @@
             },
 
             beforeUnmount() {
-                clearInterval(this.interval); // Clean up interval on component destroy
             },
 
         });
