@@ -679,7 +679,7 @@
                 rebuild_app: function () {
                     subd = this.sub_name
 
-                    return axios.post(this.api_url + `/rebuild-app/${sub}`,  {
+                    return axios.post(this.api_url + `/rebuild-app/${subd}`,  {
                         subdomain: this.subdomain
                     })
                     .then(function (response) {
