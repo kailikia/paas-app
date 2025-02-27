@@ -666,10 +666,12 @@
                     })
                     .then(function (response) {
                         console.log('Destroy response:', response.data)
+
+                        // setTimeout(() => {
+                        //     window.location.reload();
+                        // }, 2000);
+
                         return response.data;
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 2000);
                     })
                     .catch(function (error) {
                         return error
@@ -683,11 +685,9 @@
                         subdomain: this.subdomain
                     })
                     .then(function (response) {
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 2000);
-                        console.log('Rebuild response:', response)
-                        return response;
+                        console.log('Rebuild response started:', response.data)
+
+                        return response.data;
                     })
                     .catch(function (error) {
                         return error
