@@ -259,12 +259,15 @@
                     <input type="text" v-model="github_url" placeholder="Enter Github Repo URL" />
 
                     <br>
-                    <label for="cars">Enter the choice app you want to deploy :</label>
-                    <select v-model="choice" class="form-control" required style="width: 50%;">
-                        <option value="flask">Flask</option>
-                        <option value="html">Html</option>
-                    </select>
-
+                    <div class="mx-auto text-center">
+                        <label for="cars">Enter the choice app you want to deploy :</label>
+                        <select v-model="choice" class="form-control" required style="width: 50%;">
+                            <option value="flask">Flask</option>
+                            <option value="html">Html</option>
+                        </select>
+    
+                    </div>
+                    
                     <div v-if="res" class="alert alert-success" role="alert">{{res}}</div>
 
                     <div v-if="err" class="alert alert-danger" role="alert">{{err}}</div>
