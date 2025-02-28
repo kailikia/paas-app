@@ -259,7 +259,7 @@
                     <input type="text" v-model="github_url" placeholder="Enter Github Repo URL" />
 
                     <br>
-                    <div class="mx-auto text-center">
+                    <div class="mx-auto text-center" style="margin-left: 50px ;">
                         <label for="cars">Enter the choice app you want to deploy :</label>
                         <select v-model="choice" class="form-control" required style="width: 50%;">
                             <option value="flask">Flask</option>
@@ -529,9 +529,9 @@
                 check_deploy: false,
                 deploy_complete:false,
                 loader: false,
-                db_host: "localhost",
+                db_host: "134.209.24.19",
                 db_name: "",
-                db_user: "",
+                db_user: "postgres",
                 db_password: "12345",
                 api_url: "http://134.209.24.19:4001",
                 db_data: [],
