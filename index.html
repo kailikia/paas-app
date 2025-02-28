@@ -66,6 +66,7 @@
 
         /*inputs*/
         #msform input,
+        #msform select,
         #msform textarea {
             padding: 15px;
             border: 1px solid #ccc;
@@ -204,6 +205,7 @@
         }
 
         #msform input,
+        #msform select,
         #msform textarea {
             padding: 7px;
             border: 1px solid #ccc;
@@ -254,20 +256,22 @@
                 <!-- Git Repo Information -->
                 <fieldset v-if="panel2">
                     <h2 class="fs-title">App Github Repository</h2>
-                    <h3 class="fs-subtitle">Ensure: main.py(that has your app.routes) and requirements.txt are in the
-                        root of your application</h3>
+                    <h3 class="fs-subtitle">Ensure: main.py(that has your app.routes) and/or index.html are in the root
+                        of your repository</h3>
                     <input type="text" v-model="github_url" placeholder="Enter Github Repo URL" />
 
                     <br>
                     <div class="mx-auto text-center" style="margin-left: 50px ;">
-                        <label for="cars">Enter the choice app you want to deploy :</label>
-                        <select v-model="choice" class="form-control" required style="width: 50%;">
+                        <h4 class="fs-title">Select the App type you want:</h4>
+                        <h3 class="fs-subtitle">Select the language used in your app: <span>Python, JavaScript, or
+                                HTML</span></h3>
+                        <select v-model="choice">
                             <option value="flask">Flask</option>
                             <option value="html">Html</option>
                         </select>
-    
+
                     </div>
-                    
+
                     <div v-if="res" class="alert alert-success" role="alert">{{res}}</div>
 
                     <div v-if="err" class="alert alert-danger" role="alert">{{err}}</div>
@@ -324,20 +328,21 @@
                             </div>
                             <div class="col-md-6 text-start">
                                 <ol>
-                                    <li class="fs-subtitle"> <b>Subdomain : {{serv_logs.subdomain}} </b>      </li>
-                                    <li class="fs-subtitle"> <b>ACME : {{serv_logs.acme}} </b>           </li>
-                                    <li class="fs-subtitle"> <b>Docker : {{serv_logs.docker}} </b>         </li>
-                                    <li class="fs-subtitle"> <b>Success Report : {{serv_logs["success-report"]}} </b> </li>
-                                    <li class="fs-subtitle"> <b>Nginx Config : {{serv_logs["nginx-files"]}} </b>    </li>
-                                    <li class="fs-subtitle"> <b>Symlink : {{serv_logs.symlink}} </b>        </li>
-                                    <li class="fs-subtitle"> <b>Restart : {{serv_logs.restart}} </b>        </li>
-                                    <li class="fs-subtitle"> <b>Complete : {{serv_logs.complete}} </b>       </li>
- 
+                                    <li class="fs-subtitle"> <b>Subdomain : {{serv_logs.subdomain}} </b> </li>
+                                    <li class="fs-subtitle"> <b>ACME : {{serv_logs.acme}} </b> </li>
+                                    <li class="fs-subtitle"> <b>Docker : {{serv_logs.docker}} </b> </li>
+                                    <li class="fs-subtitle"> <b>Success Report : {{serv_logs["success-report"]}} </b>
+                                    </li>
+                                    <li class="fs-subtitle"> <b>Nginx Config : {{serv_logs["nginx-files"]}} </b> </li>
+                                    <li class="fs-subtitle"> <b>Symlink : {{serv_logs.symlink}} </b> </li>
+                                    <li class="fs-subtitle"> <b>Restart : {{serv_logs.restart}} </b> </li>
+                                    <li class="fs-subtitle"> <b>Complete : {{serv_logs.complete}} </b> </li>
+
                                 </ol>
                             </div>
 
                         </div>
-                        
+
                     </div>
 
                     <br>
@@ -382,22 +387,22 @@
                             <td>{{x.github_url}}</td>
                             <td>{{x.port}} </td>
                             <td> <button @click="openModal(x.name)" class="btn btn-light" data-bs-toggle="modal"
-                                    data-bs-target="#staticBackdrop"> Status </button> 
+                                    data-bs-target="#staticBackdrop"> Status </button>
                             </td>
                             <td> <button @click="rebuildModal(x.name)" class="btn btn-light" data-bs-toggle="modal"
-                                data-bs-target="#rebuildModal"> Rebuild </button> 
+                                    data-bs-target="#rebuildModal"> Rebuild </button>
                             </td>
                             <td> <button @click="destroyModal(x.name)" class="btn btn-danger" data-bs-toggle="modal"
                                     data-bs-target="#destroyModal"> Destroy </button>
                             </td>
                             <td> <button @click="openModal2(x.name)" class="btn btn-light" data-bs-toggle="modal"
-                                    data-bs-target="#staticBackdrop"> Acme </button> 
+                                    data-bs-target="#staticBackdrop"> Acme </button>
                             </td>
                             <td> <button @click="openModal3(x.name)" class="btn btn-light" data-bs-toggle="modal"
-                                    data-bs-target="#staticBackdrop"> Nginx </button> 
+                                    data-bs-target="#staticBackdrop"> Nginx </button>
                             </td>
                             <td> <button @click="openModal4(x.name)" class="btn btn-light" data-bs-toggle="modal"
-                                    data-bs-target="#staticBackdrop"> Docker </button> 
+                                    data-bs-target="#staticBackdrop"> Docker </button>
                             </td>
                         </tr>
                     </tbody>
@@ -527,7 +532,7 @@
                 err: "",
                 deploy_res: "",
                 check_deploy: false,
-                deploy_complete:false,
+                deploy_complete: false,
                 loader: false,
                 db_host: "134.209.24.19",
                 db_name: "",
@@ -546,7 +551,7 @@
                     this.sub_name = name;
                     this.fetchlogs(name);
                 },
-                
+
                 openModal2(name) {
                     this.sub_name = name;
                     this.acme_logs(name);
@@ -619,7 +624,7 @@
                             if (data.complete == 'true') {
                                 this.check_deploy = true
                                 console.log("server logs complete:", this.serv_logs)
-    
+
                             }
 
                         }).catch(error => {
@@ -653,7 +658,7 @@
 
                             // Ensure DOM updates are complete, then initialize DataTables
                             this.$nextTick(() => {
-                         
+
                                 if ($.fn.DataTable.isDataTable('#myTable')) {
                                     $('#myTable').DataTable().destroy();  // Destroy previous instance if exists
                                 }
@@ -669,40 +674,40 @@
                             console.error('Error fetching db:', error);
                         });
                 },
-                
+
                 destroy_app: function () {
                     subd = this.sub_name
                     return axios.post(this.api_url + `/destroy-app/${subd}`, {
                         subdomain: this.subdomain
                     })
-                    .then(function (response) {
-                        console.log('Destroy response:', response.data)
+                        .then(function (response) {
+                            console.log('Destroy response:', response.data)
 
-                        // setTimeout(() => {
-                        //     window.location.reload();
-                        // }, 2000);
+                            // setTimeout(() => {
+                            //     window.location.reload();
+                            // }, 2000);
 
-                        return response.data;
-                    })
-                    .catch(function (error) {
-                        return error
-                    });
+                            return response.data;
+                        })
+                        .catch(function (error) {
+                            return error
+                        });
                 },
 
                 rebuild_app: function () {
                     subd = this.sub_name
 
-                    return axios.post(this.api_url + `/rebuild-app/${subd}`,  {
+                    return axios.post(this.api_url + `/rebuild-app/${subd}`, {
                         subdomain: this.subdomain
                     })
-                    .then(function (response) {
-                        console.log('Rebuild response started:', response.data)
+                        .then(function (response) {
+                            console.log('Rebuild response started:', response.data)
 
-                        return response.data;
-                    })
-                    .catch(function (error) {
-                        return error
-                    });
+                            return response.data;
+                        })
+                        .catch(function (error) {
+                            return error
+                        });
                 },
 
                 check_availability: function () {
@@ -738,15 +743,15 @@
                     return axios.post(this.api_url + '/deploy-progress', {
                         subdomain: this.subdomain
                     })
-                    .then(function (response) {
+                        .then(function (response) {
 
-                        res = response.data
-                        
-                        return res
-                    })
-                    .catch(function (error) {
-                        return error
-                    });
+                            res = response.data
+
+                            return res
+                        })
+                        .catch(function (error) {
+                            return error
+                        });
                 },
 
                 go_to_subdomain: function () {
@@ -801,13 +806,36 @@
                         this.res = ""
                         this.err = "Enter Valid Github Repository"
                     }
-                    else {
-                        this.panel2 = false;
-                        this.panel3 = true;
-                        this.panel1 = false;
-
+                    else if (this.choice == "") {
                         this.res = ""
-                        this.err = ""
+                        this.err = "Select Valid App Type"
+                    }
+                    else {
+                        if (this.choice == "html") {
+                            this.loader = true
+                            // Axios send the subdomain and github URL
+                            this.deploy_application().then((res) => {
+                                console.log("Deployment in Progress", res)
+                                if (res.status == 1) {
+
+                                }
+                                else {
+                                    this.res = ""
+                                    this.err = "Errror try deploying later.";
+                                }
+                            });
+                            //Change Panel
+                            this.next_panel_four();
+
+                        }
+                        else {
+                            this.panel2 = false;
+                            this.panel3 = true;
+                            this.panel1 = false;
+
+                            this.res = ""
+                            this.err = ""
+                        }
                     }
                 },
 
@@ -850,24 +878,24 @@
                     v = this;
 
                     // Axios to check the deployment progress 
-                    
+
                     checker = setInterval(() => {
                         if (!v.deploy_complete) {
 
                             this.deploy_progress().then((res) => {
                                 this.deploy_res = res
                                 this.loader = false;
-        
-                                if (res.length > 1){
+
+                                if (res.length > 1) {
                                     this.loader = false;
-        
+
                                     this.deploy_complete = true;
                                     console.log("Deploy progress complete:", this.deploy_res)
                                 }
                             });
                         };
-                    }, 5000);     
-                        
+                    }, 5000);
+
 
                     // Getting server logs every 5 secs
                     interv = setInterval(() => {
@@ -877,8 +905,8 @@
                         }
                     }, 10000);
 
-                                           
-                       
+
+
 
                 },
 
@@ -904,7 +932,7 @@
 
             mounted() {
                 this.fetchdata();
-                
+
             },
 
             beforeUnmount() {
