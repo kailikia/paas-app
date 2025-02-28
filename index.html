@@ -255,8 +255,14 @@
                 <fieldset v-if="panel2">
                     <h2 class="fs-title">App Github Repository</h2>
                     <h3 class="fs-subtitle">Ensure: main.py(that has your app.routes) and requirements.txt are in the
-                        root</h3>
+                        root of your application</h3>
                     <input type="text" v-model="github_url" placeholder="Enter Github Repo URL" />
+
+                    <label for="cars">Enter the choice app you want to deploy :</label>
+                    <select v-model="choice" class="form-control" required>
+                        <option value="flask">Flask</option>
+                        <option value="html">Html</option>
+                    </select>
 
                     <div v-if="res" class="alert alert-success" role="alert">{{res}}</div>
 
@@ -512,6 +518,7 @@
                 panel4: false,
                 subdomain: "",
                 github_url: "",
+                choice: "",
                 res: "",
                 err: "",
                 deploy_res: "",
@@ -710,6 +717,7 @@
                     return axios.post(this.api_url + '/deploy-app', {
                         subdomain: this.subdomain,
                         github_url: this.github_url,
+                        choice: this.choice,
                         db_name: this.db_name,
                         db_user: this.db_user,
                         db_password: this.db_password
