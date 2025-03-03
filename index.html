@@ -728,9 +728,10 @@
                         .then(function (response) {
                             console.log('Destroy response:', response.data)
 
-                            // setTimeout(() => {
-                            //     window.location.reload();
-                            // }, 2000);
+                            setTimeout(() => {
+                                 window.location.reload();
+                            }, 10000)
+
 
                             return response.data;
                         })
