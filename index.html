@@ -261,7 +261,7 @@
                     <input type="text" v-model="github_url" placeholder="Enter Github Repo URL" />
 
                     <br>
-                    <div class="mx-auto text-center" style="margin-left: 50px ;">
+                    <div class="text-center">
                         <h4 class="fs-title">Select the App type you want:</h4>
                         <h3 class="fs-subtitle">Select the language used in your app: <span>Python, JavaScript, or
                                 HTML</span></h3>
@@ -346,6 +346,9 @@
                     </div>
 
                     <br>
+                    <div v-if="loader">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
                     <div v-if="check_deploy">
                         <input type="button" name="submit" @click="go_to_subdomain" class="submit action-button"
                             value="Go to site" />
@@ -371,12 +374,10 @@
                             <th scope="col">Sub Domain</th>
                             <th scope="col">Github url</th>
                             <th scope="col">Port</th>
-                            <th scope="col">Status</th>
+                            <th scope="col">Logs</th>
                             <th scope="col">Re build</th>
                             <th scope="col">Destroy </th>
-                            <th scope="col">Acme </th>
-                            <th scope="col">Nginx </th>
-                            <th scope="col">Docker </th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -387,7 +388,7 @@
                             <td>{{x.github_url}}</td>
                             <td>{{x.port}} </td>
                             <td> <button @click="openModal(x.name)" class="btn btn-light" data-bs-toggle="modal"
-                                    data-bs-target="#staticBackdrop"> Status </button>
+                                    data-bs-target="#staticBackdrop"> Logs</button>
                             </td>
                             <td> <button @click="rebuildModal(x.name)" class="btn btn-light" data-bs-toggle="modal"
                                     data-bs-target="#rebuildModal"> Rebuild </button>
@@ -395,15 +396,8 @@
                             <td> <button @click="destroyModal(x.name)" class="btn btn-danger" data-bs-toggle="modal"
                                     data-bs-target="#destroyModal"> Destroy </button>
                             </td>
-                            <td> <button @click="openModal2(x.name)" class="btn btn-light" data-bs-toggle="modal"
-                                    data-bs-target="#staticBackdrop"> Acme </button>
-                            </td>
-                            <td> <button @click="openModal3(x.name)" class="btn btn-light" data-bs-toggle="modal"
-                                    data-bs-target="#staticBackdrop"> Nginx </button>
-                            </td>
-                            <td> <button @click="openModal4(x.name)" class="btn btn-light" data-bs-toggle="modal"
-                                    data-bs-target="#staticBackdrop"> Docker </button>
-                            </td>
+
+
                         </tr>
                     </tbody>
                 </table>
@@ -421,21 +415,66 @@
             <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title fs-5" id="staticBackdropLabel">Application Deployment Status </h4>
+                        <h4 class="modal-title fs-5" id="staticBackdropLabel">Application Deployment Status</h4>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body text-success">
-                        <h6 class="text-center  text-black">Subdomain : {{sub_name}}.techcamp.app</h6>
-                        <ol>
-                            <li v-for="det in sub_logs" :key="det.id">{{ det.message }}</li>
-                        </ol>
+
+                        <!-- TABS FOR LOGS -->
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" @click="fetchlogs" id="status-tab" data-bs-toggle="tab"
+                                    data-bs-target="#status-tab-pane" type="button" role="tab"
+                                    aria-controls="status-tab-pane" aria-selected="true">
+                                    Status
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" @click="acme_logs" id="ssl-tab" data-bs-toggle="tab"
+                                    data-bs-target="#ssl-tab-pane" type="button" role="tab" aria-controls="ssl-tab-pane"
+                                    aria-selected="false">
+                                    SSL
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" @click="dock_logs" id="dock-tab" data-bs-toggle="tab"
+                                    data-bs-target="#dock-tab-pane" type="button" role="tab"
+                                    aria-controls="dock-tab-pane" aria-selected="false">
+                                    Docker
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" @click="nginx_logs" id="nginx-tab" data-bs-toggle="tab"
+                                    data-bs-target="#nginx-tab-pane" type="button" role="tab"
+                                    aria-controls="nginx-tab-pane" aria-selected="false">
+                                    Nginx
+                                </button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="myTabContent">
+                            <div v-for="(logList, key) in sub_logs" :key="key" class="tab-pane fade"
+                                :class="{ 'show active': key === activeTab }" :id="key + '-tab-pane'" role="tabpanel"
+                                :aria-labelledby="key + '-tab'" tabindex="0">
+                                <h6 class="text-center text-black mt-4 mb-4">{{ key.toUpperCase() }} Logs for Subdomain: {{sub_name }}.techcamp.app</h6>
+                                
+                                <ol v-if="sub_logs[activeTab]?.length">
+                                    <li v-for="det in sub_logs[activeTab]" :key="det.id">
+                                        {{ det.message }}
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+
                     </div>
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-dark" data-bs-dismiss="modal">OK</button>
                     </div>
                 </div>
             </div>
         </div>
+
 
         <!-- End of Subdomain Deploy Status Modal -->
 
@@ -507,7 +546,9 @@
     <!-- DataTables JS -->
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
 
     <!-- <script>
         $(document).ready(function () {
@@ -540,7 +581,13 @@
                 db_password: "12345",
                 api_url: "http://134.209.24.19:4001",
                 db_data: [],
-                sub_logs: [],
+                activeTab: "status", // Default active tab
+                sub_logs: {
+                    status: [],
+                    ssl: [],
+                    dock: [],
+                    nginx: [],
+                },
                 serv_logs: {},
                 sub_name: null,
             },
@@ -549,22 +596,7 @@
 
                 openModal(name) {
                     this.sub_name = name;
-                    this.fetchlogs(name);
-                },
 
-                openModal2(name) {
-                    this.sub_name = name;
-                    this.acme_logs(name);
-                },
-
-                openModal3(name) {
-                    this.sub_name = name;
-                    this.nginx_logs(name);
-                },
-
-                openModal4(name) {
-                    this.sub_name = name;
-                    this.dock_logs(name);
                 },
 
                 destroyModal(name) {
@@ -575,12 +607,15 @@
                     this.sub_name = name;
                 },
 
-                acme_logs(subd) {
+                acme_logs() {
+                    subd = this.sub_name;
+                    this.activeTab = "ssl";
+
                     fetch(this.api_url + `/logs/acme/${subd}`)
                         .then(response => response.json())
                         .then(data => {
 
-                            this.sub_logs = data;
+                            this.sub_logs.ssl = data;
 
                         }).catch(error => {
                             console.error('Error fetching logs:', error);
@@ -588,12 +623,15 @@
 
                 },
 
-                dock_logs(subd) {
+                dock_logs() {
+                    subd = this.sub_name;
+                    this.activeTab = "dock";
+
                     fetch(this.api_url + `/logs/docker/${subd}`)
                         .then(response => response.json())
                         .then(data => {
 
-                            this.sub_logs = data;
+                            this.sub_logs.dock = data;
 
                         }).catch(error => {
                             console.error('Error fetching logs:', error);
@@ -601,12 +639,15 @@
 
                 },
 
-                nginx_logs(subd) {
+                nginx_logs() {
+                    subd = this.sub_name;
+                    this.activeTab = "nginx";
+
                     fetch(this.api_url + `/logs/nginx/${subd}`)
                         .then(response => response.json())
                         .then(data => {
 
-                            this.sub_logs = data;
+                            this.sub_logs.nginx = data;
 
                         }).catch(error => {
                             console.error('Error fetching logs:', error);
@@ -633,13 +674,17 @@
 
                 },
 
-                fetchlogs(subd) {
+                fetchlogs() {
+                    subd = this.sub_name;
+                    this.activeTab = "status";
+
                     fetch(this.api_url + `/subdomain-logs/${subd}`)
                         .then(response => response.json())
                         .then(data => {
 
                             console.log('Sub domain logs:', JSON.stringify(data));
-                            this.sub_logs = data;
+                            this.sub_logs.status = data;
+
 
                         }).catch(error => {
                             console.error('Error fetching logs:', error);
