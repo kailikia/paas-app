@@ -925,31 +925,31 @@
 
                     // Axios to check the deployment progress 
 
-                    checker = setInterval(() => {
-                        if (!v.deploy_complete) {
+                    //checker = setInterval(() => {
+                    //    if (!v.deploy_complete) {
 
-                            this.deploy_progress().then((res) => {
-                                this.deploy_res = res
-                                this.loader = false;
+                    //        this.deploy_progress().then((res) => {
+                    //            this.deploy_res = res
+                    //            this.loader = false;
 
-                                if (res.length > 1) {
-                                    this.loader = false;
+                    //            if (res.length > 1) {
+                    //                this.loader = false;
 
-                                    this.deploy_complete = true;
-                                    console.log("Deploy progress complete:", this.deploy_res)
-                                }
-                            });
-                        };
-                    }, 5000);
+                    //                this.deploy_complete = true;
+                    //                console.log("Deploy progress complete:", this.deploy_res)
+                    //            }
+                    //        });
+                    //    };
+                    //}, 5000);
 
 
                     // Getting server logs every 5 secs
-                    interv = setInterval(() => {
-                        if (!v.check_deploy) {
-                            this.server_logs();
+                    //interv = setInterval(() => {
+                    //    if (!v.check_deploy) {
+                    //        this.server_logs();
 
-                        }
-                    }, 10000);
+                    //    }
+                    //}, 10000);
 
 
 
